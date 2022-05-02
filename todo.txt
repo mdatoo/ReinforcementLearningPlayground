@@ -1,0 +1,8 @@
+- Register new environment in gym and initialise it in the standard manner [X]
+- Cleanup file system [X]
+- Add modifications to cross entropy for custom env [X]
+- Test on standard environments, using observation/action wrappers (and remove the one hot encoding part of tensor selector - will use action wrapper instead) [X]
+- Clean up files [X]
+- Add value iteration agent [X]
+- Add testing [X]
+- Add deep q learning agent
