@@ -2,7 +2,7 @@ from typing import List
 
 import numpy as np
 
-from .. import Episode
+from .. import Episode, Step
 
 
 class EpisodeRepository:
@@ -18,8 +18,14 @@ class EpisodeRepository:
     def get(self) -> Episode:
         raise NotImplementedError
 
+    def get_step(self) -> Step:
+        return np.random.choice(self.get().steps)
+
     def get_n(self, n: int) -> List[Episode]:
         return [self.get() for _ in range(n)]
+
+    def get_n_steps(self, n: int) -> List[Step]:
+        return [self.get_step() for _ in range(n)]
 
     def boundary(self, percentile: float) -> float:
         return np.percentile([episode.reward for episode in self.episodes], percentile)

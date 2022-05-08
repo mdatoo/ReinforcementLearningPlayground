@@ -32,5 +32,5 @@ if __name__ == "__main__":
     episode_repository = FixedRandomFifoRepository(initial_episodes)
     episode_filters = [RepositoryPercentileFilter(episode_repository, ELITE_PERCENTILE)]
 
-    agent = CrossEntropy(BATCH_SIZE, episode_filters, episode_generator, episode_repository, model)
+    agent = CrossEntropy(BATCH_SIZE, episode_filters, episode_generator, episode_repository)
     agent.train(0.5)

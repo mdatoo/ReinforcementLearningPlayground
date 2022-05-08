@@ -18,7 +18,7 @@ class TestEpisodeGenerator(unittest.TestCase):
         self.action_selector.select = MagicMock(return_value=action)
         self.env.step = MagicMock(return_value=(new_state, reward, True, None))
 
-        assert self.episode_generator.generate() == Episode([Step(state, action, new_state, reward)])
+        assert self.episode_generator.generate() == Episode([Step(state, action, new_state, reward, True)])
         self.episode_generator.generate_action_probs.assert_called_once_with(state)
         self.action_selector.select.assert_called_once_with(action_probs)
         self.env.step.assert_called_once_with(action)

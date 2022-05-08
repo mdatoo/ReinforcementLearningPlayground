@@ -7,7 +7,7 @@ from reinforcementLearningPlayground.episodes import Episode, Step
 class TestEpisode(unittest.TestCase):
     def test_reward(self) -> None:
         rewards = [5, 4, 0, 7]
-        steps = [Step(None, None, None, reward) for reward in rewards]
+        steps = [Step(None, None, None, reward, None) for reward in rewards]
         episode = Episode(steps)
 
         assert episode.reward == sum(rewards)

@@ -1,4 +1,4 @@
-from typing import List, Generic, TypeVar
+from typing import List, TypeVar
 
 from gym import Env
 
@@ -24,7 +24,7 @@ class EpisodeGenerator:
             action_probs = self.generate_action_probs(state)
             action = self.action_selector.select(action_probs)
             new_state, reward, is_done, _ = self.env.step(action)
-            steps.append(Step(state, action, new_state, reward))
+            steps.append(Step(state, action, new_state, reward, is_done))
 
             state = new_state
 

@@ -30,5 +30,5 @@ if __name__ == "__main__":
     initial_episodes = episode_generator.generate_n_valid(REPOSITORY_SIZE, episode_filters)
     episode_repository = FixedRandomFifoRepository(initial_episodes)
 
-    agent = CrossEntropy(BATCH_SIZE, episode_filters, episode_generator, episode_repository, model)
+    agent = CrossEntropy(BATCH_SIZE, episode_filters, episode_generator, episode_repository)
     agent.train(env.spec.reward_threshold)

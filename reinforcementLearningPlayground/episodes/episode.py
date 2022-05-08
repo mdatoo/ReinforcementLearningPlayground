@@ -3,7 +3,7 @@ from collections import namedtuple
 from statistics import mean
 from typing import List
 
-Step = namedtuple("Step", field_names=["state", "action", "new_state", "reward"])
+Step = namedtuple("Step", field_names=["state", "action", "new_state", "reward", "is_done"])
 
 
 class Episode:
