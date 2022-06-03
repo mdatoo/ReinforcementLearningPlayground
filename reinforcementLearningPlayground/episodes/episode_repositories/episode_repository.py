@@ -19,7 +19,8 @@ class EpisodeRepository:
         raise NotImplementedError
 
     def get_step(self) -> Step:
-        return np.random.choice(self.get().steps)
+        steps = self.get().steps
+        return steps[np.random.choice(len(steps))]
 
     def get_n(self, n: int) -> List[Episode]:
         return [self.get() for _ in range(n)]

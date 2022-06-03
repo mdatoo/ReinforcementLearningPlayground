@@ -1,9 +1,10 @@
 from typing import List
 
 import numpy as np
+import tensorflow as tf
 from tensorflow import GradientTape
 from tensorflow.python.keras.models import clone_model
-from tensorflow.python.keras.optimizers import TFOptimizer as Optimizer
+from tensorflow.python.keras.optimizer_v2.optimizer_v2 import OptimizerV2 as Optimizer
 from tensorflow.python.keras.losses import Loss
 
 from .agent import Agent
@@ -41,7 +42,7 @@ class DeepQ(Agent):
         self.step = 0
 
     def train_step(self, episodes: List[Episode]) -> None:
-        if self.sync_frames % self.step == 0:
+        if self.step % self.sync_frames == 0:
             self.tgt_model = clone_model(self.model)
         self.step += 1
 
@@ -55,16 +56,17 @@ class DeepQ(Agent):
     def _train_model(self) -> None:
         steps = self.episode_repository.get_n_steps(self.batch_size)
         states = np.asarray([step.state for step in steps])
-        actions = np.asarray([step.action for step in steps])
+        actions = np.asarray([step.action for step in steps], dtype=int)
         new_states = np.asarray([step.new_state for step in steps])
         rewards = np.asarray([step.reward for step in steps])
-        dones = np.asarray([1 if step.is_done else 0 for step in steps])
+        not_dones = np.asarray([0 if step.is_done else 1 for step in steps])
 
         with GradientTape() as tape:
             logits = self.model(states, training=True)
-            predicted_q = np.take_along_axis(logits, np.reshape(actions, (-1, 1)), axis=1).flatten()
-            actual_q = rewards + self.gamma * dones * self.model(new_states, training=True).max(1)
+            predicted_q = tf.gather(logits, tf.argmax(actions, axis=1), batch_dims=1)
+            actual_q = rewards + self.gamma * not_dones * tf.reduce_max(self.model(new_states, training=True))
             loss = self.loss(actual_q, predicted_q)
+            print(f"Loss: {loss}")
 
         grads = tape.gradient(loss, self.model.trainable_weights)
         self.optimiser.apply_gradients(zip(grads, self.model.trainable_weights))

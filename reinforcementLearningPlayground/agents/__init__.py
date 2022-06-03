@@ -2,6 +2,7 @@ import gym
 
 from .agent import Agent
 from .cross_entropy import CrossEntropy
+from .deep_q import DeepQ
 from .value_iteration import ValueIteration
 from ..environments.dribbling.v0 import BASE_REWARD as DV0_BASE_REWARD
 

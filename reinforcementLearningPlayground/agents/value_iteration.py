@@ -15,7 +15,7 @@ class ValueIteration(Agent):
             self,
             batch_size: int,
             episode_generator: ValueGenerator,
-            alpha: float = 0.9,
+            alpha: float = 0.2,
             gamma: int = 0.9
     ):
         super().__init__(batch_size, episode_generator)
