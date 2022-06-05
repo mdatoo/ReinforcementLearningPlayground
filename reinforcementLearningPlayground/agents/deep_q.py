@@ -23,7 +23,7 @@ class DeepQ(Agent):
             episode_repository: EpisodeRepository,
             loss: Loss,
             optimiser: Optimizer,
-            gamma: int = 0.99,
+            gamma: int = 0.9,
             sync_frames: int = 1000
     ):
         super().__init__(batch_size, episode_generator)
@@ -32,7 +32,7 @@ class DeepQ(Agent):
         self.episode_repository = episode_repository
 
         self.model = episode_generator.model
-        self.tgt_model = None
+        self.tgt_model = clone_model(self.model)
         self.loss = loss
         self.optimiser = optimiser
 
@@ -43,7 +43,7 @@ class DeepQ(Agent):
 
     def train_step(self, episodes: List[Episode]) -> None:
         if self.step % self.sync_frames == 0:
-            self.tgt_model = clone_model(self.model)
+            self.tgt_model.set_weights(self.model.get_weights())
         self.step += 1
 
         self._update_repository(episodes)
@@ -64,7 +64,8 @@ class DeepQ(Agent):
         with GradientTape() as tape:
             logits = self.model(states, training=True)
             predicted_q = tf.gather(logits, tf.argmax(actions, axis=1), batch_dims=1)
-            actual_q = rewards + self.gamma * not_dones * tf.reduce_max(self.model(new_states, training=True))
+            actual_q = rewards + self.gamma * not_dones * tf.reduce_max(self.tgt_model(new_states, training=False),
+                                                                        axis=1)
             loss = self.loss(actual_q, predicted_q)
             print(f"Loss: {loss}")
 
